@@ -20,8 +20,7 @@ int main()
 	int selection=1;
 	Mix_Music *music;
 	Mix_Chunk *effect;
-	int volume;
-	int volume1;
+	Uint8 volume,volume2;
 
 	if(SDL_Init(SDL_INIT_EVERYTHING)!=0)
 		printf("Unable to initialize SDL : %s\n",SDL_GetError());
@@ -95,13 +94,8 @@ int main()
 
  	music=Mix_LoadMUS("music.mp3");
 	Mix_PlayMusic(music,-1);
-	volume=Mix_Volume_Music(music,MIX_MAX_VOLUME/2);
-	
-	
 	
 	effect=Mix_LoadWAV("effect.wav");
-	volume1=Mix_Volume_Chunk(effect,MIX_MAX_VOLUME);
-	//Mix_Chunk()
 
 
 while(done==1)
