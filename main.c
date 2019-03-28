@@ -1,5 +1,4 @@
 #include "menu.h"
-#include "objet.h"
 
 int main()
 {
