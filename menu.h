@@ -14,7 +14,7 @@ void afficherMenu(SDL_Surface* screen,SDL_Surface *bg[],SDL_Surface *buttons[],S
 
 void input (int *done, int *key);
 
-void update (int key,int *done,int *menu,int *selection,int level,int *multij,int *game,int *nbg,int *nbut,int *nset,int *nlevel,int *nplayer,Mix_Chunk *effect,int time,int *player);
+void update (int key,int *done,int *menu,int *selection,int level,int *multij,int *game,int *nbg,int *nbut,int *nset,int *nlevel,int *nplayer,Mix_Chunk *effect,int *player,int *time);
 
 
 

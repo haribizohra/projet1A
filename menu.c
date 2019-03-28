@@ -18,12 +18,11 @@ SDL_Surface *loadimage(char name[])
 	return optimizedImage; 
 }
 
-
 void initialiserMenu(SDL_Surface** screen,SDL_Surface *bg[],SDL_Surface *buttons[],SDL_Surface *settings[],SDL_Surface *levels[],SDL_Surface *players[],SDL_Surface **logo,SDL_Surface **Breturn,SDL_Surface **black,Mix_Music **music,Mix_Chunk **effect, SDL_Rect *posButtons,SDL_Rect *posLevels,SDL_Rect *posLogo,SDL_Rect *posSettings,SDL_Rect *posPlayers,SDL_Rect *posBReturn,SDL_Rect *posBlack1,SDL_Rect *posBlack2)
 {
 
 	
-	if(SDL_Init(SDL_INIT_EVERYTHING)!=0)
+	if(SDL_Init(SDL_INIT_VIDEO)!=0)
 		printf("Unable to initialize SDL : %s\n",SDL_GetError());
 
 	if(Mix_OpenAudio(44100,MIX_DEFAULT_FORMAT,MIX_DEFAULT_CHANNELS,1024)==-1)
@@ -31,8 +30,12 @@ void initialiserMenu(SDL_Surface** screen,SDL_Surface *bg[],SDL_Surface *buttons
 
 	*music=Mix_LoadMUS("music.mp3");
 	*effect=Mix_LoadWAV("effect.wav");	
+	
+	SDL_WM_SetIcon(loadimage("layer 0"),NULL);
+	SDL_WM_SetCaption("PLOTTWIST","PLOTTWIST");
 
 	*screen = SDL_SetVideoMode(1080,720,32,SDL_HWSURFACE|SDL_DOUBLEBUF);
+
 
 	if(*screen==NULL)
 		printf("Unable to set video mode: %s \n",SDL_GetError());
@@ -178,8 +181,10 @@ void input (int *done, int *key)
 }
 
 
-void update (int key,int *done,int *menu,int *selection,int level,int *multij,int *game,int *nbg,int *nbut,int *nset,int *nlevel,int *nplayer,Mix_Chunk *effect,int time,int *player)
+void update (int key,int *done,int *menu,int *selection,int level,int *multij,int *game,int *nbg,int *nbut,int *nset,int *nlevel,int *nplayer,Mix_Chunk *effect,int *player,int *time)
 {
+	int now=0;	
+	
 	switch (key)
 	{
 	case 1 : //escape
@@ -429,7 +434,11 @@ void update (int key,int *done,int *menu,int *selection,int level,int *multij,in
 	break;
 	}//switch
 	
-	(*nbg)++;
-
+	now=SDL_GetTicks();
+	if((now-(*time))>250)
+	{	
+		(*nbg)++;
+		(*time)=SDL_GetTicks();
+	}
     	if((*nbg) >= 12) (*nbg) = 0;
 }
