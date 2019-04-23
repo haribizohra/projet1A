@@ -14,6 +14,7 @@ void nbVie(int collision, int *gameOver ,Vie *vie, SDL_Surface *screen)
 {
 	if ((collision>(3-vie->valVie)) && vie->valVie!=0)
 	vie->valVie --;
+
 	 if (vie->valVie==0)
 	{
 		*gameOver=1;

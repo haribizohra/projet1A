@@ -12,6 +12,7 @@ typedef struct {
 	SDL_Surface *image[2];
 	SDL_Rect pos[5];
 	int num[5],nbrEtoiles,collision[5];
+	int nbrCollisions,numEtoile;
 	float lastAnimated;
 	
 }Etoile;

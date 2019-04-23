@@ -37,7 +37,7 @@ int main()
 
 		
 	runMenu(&screen,&key,&menuSet,&backg,&buttons,&settings,&levels,&players,&logo,&Breturn,&black1,&black2);
-	printf("fel main player =%d",menuSet.player);
+	//printf("fel main player =%d",menuSet.player);
 	//screen=NULL;
 	//screen = SDL_SetVideoMode(1080,720,32,SDL_HWSURFACE|SDL_DOUBLEBUF);
 	runGame(&screen,menuSet,&bg,&runningGame,&etoile,&lampe,&pers,&ennemi,&chrono,&vie,&score,&gameover);

@@ -6,7 +6,7 @@ void initialiserPerso(perso *p,int player)
 	p->image[1]=IMG_Load("./resources/alpha.png");
 	
 	p->pos.x=120;
-	p->pos.y=347;
+	p->pos.y=372;  //372
 	p->pos.w=80;
 	p->pos.h=128;
 	p->numPerso=player-1;
@@ -83,6 +83,12 @@ void deplacementPerso(SDL_Event event,perso *p)
 {
 	int x,y;	
 	
+	if(p->mvt != p->previousmvt)
+	{
+		p->frame[p->numPerso].x=0;
+		p->previousmvt = p->mvt;
+	}
+
 	switch(event.type)
 	{
 		case SDL_KEYDOWN:
@@ -124,36 +130,55 @@ void deplacementPerso(SDL_Event event,perso *p)
 	  	break;
 	
 		case SDL_MOUSEBUTTONUP:
-			if(event.button.button == SDL_BUTTON_LEFT)
-		    		p->mvt=0;
+			if (p->pos.y<372)
+			{		
+				p->pos.x+=4;			
+				p->pos.y+=15;
+			}
+			else 
+			{					
+				p->pos.y=372;
+				p->mvt=0;
+			}	
+			
 	  	break;
 
 		case SDL_MOUSEMOTION:
 			if(event.motion.x > p->pos.x + 40)
 			{
-				p->mvt=1;
-				p->pos.x+=3;
+				if (p->pos.y<372)
+				{		
+					p->pos.x+=4;			
+					p->pos.y+=15;
+				}
+				else 
+				{					
+					p->pos.y=372;
+					p->mvt=1;
+					p->pos.x+=3;	
+				}
 			}
 			else p->mvt=0;
 	   	break;
+		
+		case SDL_KEYUP:				
+			if (p->pos.y<372)
+			{		
+				p->pos.x+=2;			
+				p->pos.y+=10;
+			}
+			else 
+			{					
+				p->pos.y=372;
+				p->mvt=0;
+			}	
+					
 
 	}
-	
 	if((p->mvt==3))
 	{
-		
-		p->pos.x+=7;		
-		if(p->frame[p->numPerso].x <= (p->image[p->numPerso]->w/2))
-			p->pos.y-=13;
-		else 
-			p->pos.y+=13;
-	}
+		if (p->pos.y>230) //230
+			{p->pos.y-=20; p->pos.x+=5;}
 
-	if(p->mvt != p->previousmvt)
-	{
-		p->frame[p->numPerso].x=0;
-		p->pos.y=347;
-		p->previousmvt = p->mvt;
 	}
-
 }

@@ -13,15 +13,15 @@ void initialiser_ennemi ( Ennemi *e)
 
 	e->nbrEnnemis=5;
 
-	e->mvt[0].pos.x=1170;
-	e->mvt[1].pos.x=2960;
-	e->mvt[2].pos.x=5070;
-	e->mvt[3].pos.x=7560;
-	e->mvt[4].pos.x=8270;
+	e->mvt[0].pos.x=1690;
+	e->mvt[1].pos.x=4120;
+	e->mvt[2].pos.x=6130;
+	e->mvt[3].pos.x=7120;
+	e->mvt[4].pos.x=8700;
 
 	for (int i=0;i< e->nbrEnnemis;i++)
 	{		
-		e->mvt[i].pos.y=385;
+		e->mvt[i].pos.y=410;
 		e->mvt[i].pos.w=100;
 		e->mvt[i].pos.h=82;
 		e->frame[i].w=100;

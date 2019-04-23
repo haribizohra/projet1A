@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <SDL/SDL_image.h>
+#include "bg.h"
 
 #ifndef SCORE_H_INCLUDED
 #define SCORE_H_INCLUDED
@@ -20,9 +21,7 @@
 
 
 void initialiserScore(Score *score );
-void afficherScore(SDL_Surface *ecran , Score *score,int collision );
-
-
+void afficherScore(SDL_Surface *ecran , Score *score,background bg,int collision );
 
 
 #endif

@@ -18,10 +18,11 @@ void initChrono(Chrono *chrono)
 void timer(Chrono *chrono, SDL_Surface *screen)
 {
 
-	if (SDL_GetTicks() - chrono->tempsPrecedent >= 5000) /* Si 5s au moins se sont écoulées */
+	if (SDL_GetTicks() - chrono->tempsPrecedent >= 6000) /* Si 6s au moins se sont écoulées */
         {
         	chrono->frame.x += chrono->frame.w;
-		
+		if(chrono->frame.x >= chrono->image->w-50)
+			chrono->frame.x=760;
         	chrono->tempsPrecedent = SDL_GetTicks(); /* On met à jour le tempsPrecedent */
         }
 	SDL_BlitSurface(chrono->image,&chrono->frame,screen,&chrono->pos);

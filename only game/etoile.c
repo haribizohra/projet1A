@@ -6,6 +6,8 @@ void initialiserEtoile(Etoile *e)
 	e->image[0]=IMG_Load("./resources/etoile.png");
 	e->image[1]=IMG_Load("./resources/etoile ptit.png");
 	e->nbrEtoiles=5;
+	e->numEtoile=0;
+	e->nbrCollisions=0;
 //	e->nbrEtoiles[1]=;
 //	e->nbrEtoiles[2]=;
 
@@ -26,7 +28,7 @@ void initialiserEtoile(Etoile *e)
 	e->pos[4].x=7400;
 
 	for(int i=0;i < e->nbrEtoiles;i++)	
-		e->pos[i].y=250;
+		e->pos[i].y=250; //250
 	/*
 	e->pos[1][0].x=;
 	e->pos[1][1].x=;

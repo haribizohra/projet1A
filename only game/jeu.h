@@ -12,10 +12,13 @@
 #include "vie.h"
 #include "score.h"
 #include "getpixel.h"
+#include "enigmes.h"
 
 #ifndef JEU_H_INCLUDED
 #define JEU_H_INCLUDED
-
-
-
+/*
+typedef struct{
+	SDL_Surface *won,*lost;
+}result;
+*/
 #endif

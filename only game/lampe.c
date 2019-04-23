@@ -20,7 +20,7 @@ void initialiserLampe(Lampe *l)
 
 	for(int j=0;j < l->nbrLampes;j++)
 	{
-		l->pos[j].y=250;		
+		l->pos[j].y=250; //250	
 		l->pos[j].w=l->image[0]->w;
 		l->pos[j].h=l->image[0]->h;
 		l->num[j]=0;

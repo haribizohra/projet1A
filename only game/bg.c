@@ -8,7 +8,7 @@ void init_bg(background *bg)
 	//bg->fixe[1]=IMG_Load("background2.jpg");
 	//bg->fixe[2]=IMG_Load("background3.jpg");
 
-	bg->scroll[0]=IMG_Load("./resources/scrolling.png");
+	bg->scroll[0]=IMG_Load("./resources/scrolling 2.png");
 	//bg->scroll[1]=IMG_Load("scroll2.jpg");
 	//bg->scroll[2]=IMG_Load("scroll3.jpg");
 
