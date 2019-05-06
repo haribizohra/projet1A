@@ -32,7 +32,7 @@ void afficherScore(SDL_Surface *ecran , Score *score,background bg,int collision
 	SDL_Color couleurRose = {208, 82, 127};
 	
 	char string[20];
-
+	
 	score->scoreActuel=bg.camera.x*0.1+50*collision;
 	sprintf(string, "score = %d ", score->scoreActuel);
 	

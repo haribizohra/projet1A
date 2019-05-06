@@ -18,7 +18,7 @@ SDL_Surface *loadimage(char name[])
 	return optimizedImage; 
 }
 
-void initialiserMenu(SDL_Surface** screen,surface *bg,surface *buttons,surface *settings,surface *levels,surface *players,surface *logo,surface *Breturn,surface *black1,surface *black2,MenuSet *menuSet)
+void initialiserMenu(SDL_Surface** screen,surface *bg,surface *buttons,surface *settings,surface *levels,surface *players,surface *input,surface *logo,surface *Breturn,surface *black1,surface *black2,MenuSet *menuSet)
 {
 
 	if(Mix_OpenAudio(44100,MIX_DEFAULT_FORMAT,MIX_DEFAULT_CHANNELS,1024)==-1)
@@ -58,6 +58,10 @@ void initialiserMenu(SDL_Surface** screen,surface *bg,surface *buttons,surface *
 	settings->nbr=4;
 	settings->num=0;
 	settings->image=malloc(settings->nbr*(sizeof(SDL_Surface*)));
+	
+	input->nbr=4;
+	input->num=0;
+	input->image=malloc(input->nbr*(sizeof(SDL_Surface*)));
 
 	logo->nbr=1;
 	logo->num=0;
@@ -115,6 +119,12 @@ void initialiserMenu(SDL_Surface** screen,surface *bg,surface *buttons,surface *
 	*(players->image+1) = loadimage("./players/2.png");
 	*(players->image+2) = loadimage("./players/3.png");
 
+	*(input->image) = loadimage("./csm/0.png");
+	*(input->image+1) = loadimage("./csm/1.png");
+	*(input->image+2) = loadimage("./csm/2.png");
+	*(input->image+3) = loadimage("./csm/3.png");
+
+
 	*(Breturn->image) = loadimage("return.png");
 
 	logo->pos.x=((*screen)->w/2)-((*(logo->image))->w/2);
@@ -131,6 +141,9 @@ void initialiserMenu(SDL_Surface** screen,surface *bg,surface *buttons,surface *
 
 	players->pos.x=((*screen)->w/2)-((*(players->image))->w/2);
 	players->pos.y=((*screen)->h/2)-((*(players->image))->h/2);
+
+	input->pos.x=((*screen)->w/2)-((*(input->image))->w/2);
+	input->pos.y=((*screen)->h/2)-((*(input->image))->h/2);
 
 	Breturn->pos.x=14;
 	Breturn->pos.y=7;
@@ -173,6 +186,12 @@ void afficherMenu(SDL_Surface *screen,surface bg,surface buttons,surface setting
 	if (menuSet.nbrmenu==4)  //players selection
 	{		
 		SDL_BlitSurface(*(players.image+(players.num)),NULL,screen,&players.pos);
+		SDL_BlitSurface(*(Breturn.image),NULL,screen,&Breturn.pos);
+	}
+	
+	if (menuSet.nbrmenu==5)  //players selection
+	{		
+		SDL_BlitSurface(*(input.image+(input.num)),NULL,screen,&input.pos);
 		SDL_BlitSurface(*(Breturn.image),NULL,screen,&Breturn.pos);
 	}
 }

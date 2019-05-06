@@ -8,15 +8,18 @@ void init_bg(background *bg)
 	//bg->fixe[1]=IMG_Load("background2.jpg");
 	//bg->fixe[2]=IMG_Load("background3.jpg");
 
-	bg->scroll[0]=IMG_Load("./resources/scrolling 2.png");
+	bg->scroll[0]=IMG_Load("./resources/scroll1.png");
 	//bg->scroll[1]=IMG_Load("scroll2.jpg");
 	//bg->scroll[2]=IMG_Load("scroll3.jpg");
+
+	bg->mask=IMG_Load("./resources/scroll 1 mask.png");
 
 	bg->camera.x=0;
 	bg->camera.y=0;
 	bg->camera.w=1080;
 	bg->camera.h=720;
 	bg->scrolling=0;
+	bg->scrollmask=0;
 }
 
 void afficher_bg(background bg,int level,SDL_Surface *screen)
@@ -33,6 +36,7 @@ void scrolling (background *bg,Lampe *l,Etoile *et,Ennemi *en,perso *p, int leve
 		{
 			p->pos.x-=10;			
 			bg->camera.x+=10;
+			bg->scrollmask+=10;
 			for(int i=0;i<l->nbrLampes; i++)	
 			{
 				l->pos[i].x-=10;

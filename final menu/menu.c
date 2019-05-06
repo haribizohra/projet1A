@@ -18,7 +18,7 @@ SDL_Surface *loadimage(char name[])
 	return optimizedImage; 
 }
 
-void initialiserMenu(SDL_Surface** screen,SDL_Surface *bg[],SDL_Surface *buttons[],SDL_Surface *settings[],SDL_Surface *levels[],SDL_Surface *players[],SDL_Surface **logo,SDL_Surface **Breturn,SDL_Surface **black,Mix_Music **music,Mix_Chunk **effect, SDL_Rect *posButtons,SDL_Rect *posLevels,SDL_Rect *posLogo,SDL_Rect *posSettings,SDL_Rect *posPlayers,SDL_Rect *posBReturn,SDL_Rect *posBlack1,SDL_Rect *posBlack2)
+void initialiserMenu(SDL_Surface** screen,SDL_Surface *bg[],SDL_Surface *buttons[],SDL_Surface *settings[],SDL_Surface *levels[],SDL_Surface *players[],SDL_Surface *csm[],SDL_Surface **logo,SDL_Surface **Breturn,SDL_Surface **black,Mix_Music **music,Mix_Chunk **effect, SDL_Rect *posButtons,SDL_Rect *posLevels,SDL_Rect *posLogo,SDL_Rect *posSettings,SDL_Rect *posPlayers,SDL_Rect *posCsm,SDL_Rect *posBReturn,SDL_Rect *posBlack1,SDL_Rect *posBlack2)
 {
 
 	
@@ -79,6 +79,11 @@ void initialiserMenu(SDL_Surface** screen,SDL_Surface *bg[],SDL_Surface *buttons
 	players[1] = loadimage("./players/2.png");
 	players[2] = loadimage("./players/3.png");
 
+	csm[0] = loadimage("./csm/0.png");
+	csm[1] = loadimage("./csm/1.png");
+	csm[2] = loadimage("./csm/2.png");
+	csm[3] = loadimage("./csm/3.png");
+
 	*Breturn = loadimage("return.png");
 
 	posLogo->x=((*screen)->w/2)-((*logo)->w/2);
@@ -96,6 +101,9 @@ void initialiserMenu(SDL_Surface** screen,SDL_Surface *bg[],SDL_Surface *buttons
 	posPlayers->x=((*screen)->w/2)-(players[0]->w/2);
 	posPlayers->y=((*screen)->h/2)-(players[0]->h/2);
 
+	posCsm->x=((*screen)->w/2)-(csm[0]->w/2);
+	posCsm->y=((*screen)->h/2)-(csm[0]->h/2);
+	
 	posBReturn->x=14;
 	posBReturn->y=7;
 
@@ -106,7 +114,7 @@ void initialiserMenu(SDL_Surface** screen,SDL_Surface *bg[],SDL_Surface *buttons
 	posBlack2->y=256;
 }
 
-void afficherMenu(SDL_Surface* screen,SDL_Surface *bg[],SDL_Surface *buttons[],SDL_Surface *settings[],SDL_Surface *levels[],SDL_Surface *players[],SDL_Surface *logo,SDL_Surface *Breturn,SDL_Surface *black,SDL_Rect posButtons,SDL_Rect posLevels,SDL_Rect posLogo,SDL_Rect posSettings,SDL_Rect posPlayers,SDL_Rect posBReturn,SDL_Rect posBlack1,SDL_Rect posBlack2,int menu,int level,int nbg,int nbut,int nset,int nlevel,int nplayer)
+void afficherMenu(SDL_Surface* screen,SDL_Surface *bg[],SDL_Surface *buttons[],SDL_Surface *settings[],SDL_Surface *levels[],SDL_Surface *players[],SDL_Surface *csm[],SDL_Surface *logo,SDL_Surface *Breturn,SDL_Surface *black,SDL_Rect posButtons,SDL_Rect posLevels,SDL_Rect posLogo,SDL_Rect posSettings,SDL_Rect posPlayers,SDL_Rect posCsm,SDL_Rect posBReturn,SDL_Rect posBlack1,SDL_Rect posBlack2,int menu,int level,int nbg,int nbut,int nset,int nlevel,int nplayer,int nCsm)
 {
 	SDL_BlitSurface( bg[nbg] , NULL , screen , NULL);
 	
@@ -139,15 +147,20 @@ void afficherMenu(SDL_Surface* screen,SDL_Surface *bg[],SDL_Surface *buttons[],S
 		SDL_BlitSurface(players[nplayer],NULL,screen,&posPlayers);
 		SDL_BlitSurface(Breturn,NULL,screen,&posBReturn);
 	}
+
+	if (menu==5)  //clavier souris manette
+	{		
+		SDL_BlitSurface(csm[nCsm],NULL,screen,&posCsm);
+		SDL_BlitSurface(Breturn,NULL,screen,&posBReturn);
+	}
 }
 
-void input (int *done, int *key)
+void input (int *done, int *key,SDL_Event *event)
 {
-	SDL_Event event;
 	(*key)=0;
-	if(SDL_PollEvent(&event)) 
+	if(SDL_PollEvent(event)) 
 	{
-	        switch (event.type) 
+	        switch (event->type) 
 		{
 		    case SDL_QUIT: 
 				(*done)=0;
@@ -155,25 +168,25 @@ void input (int *done, int *key)
 
 		    case SDL_KEYDOWN:
 
-			if(event.key.keysym.sym==SDLK_ESCAPE)
+			if(event->key.keysym.sym==SDLK_ESCAPE)
 			(*key)=1;//escape		
 			
-			if(event.key.keysym.sym==SDLK_DOWN)
+			if(event->key.keysym.sym==SDLK_DOWN)
 			(*key)=2;//down
 
-			if(event.key.keysym.sym==SDLK_UP)
+			if(event->key.keysym.sym==SDLK_UP)
 			(*key)=3; //up
 			
-			if(event.key.keysym.sym==SDLK_RIGHT)
+			if(event->key.keysym.sym==SDLK_RIGHT)
 			(*key)=4;//rigth
 			
-			if(event.key.keysym.sym==SDLK_LEFT)
+			if(event->key.keysym.sym==SDLK_LEFT)
 			(*key)=5;//left
 			
-			if(event.key.keysym.sym==SDLK_RETURN)
+			if(event->key.keysym.sym==SDLK_RETURN)
 			(*key)=6;//return
 			
-			if(event.key.keysym.sym==SDLK_SPACE)
+			if(event->key.keysym.sym==SDLK_SPACE)
 			(*key)=7;//space
 			
                 }//switch
@@ -181,13 +194,20 @@ void input (int *done, int *key)
 }
 
 
-void update (int key,int *done,int *menu,int *selection,int level,int *multij,int *game,int *nbg,int *nbut,int *nset,int *nlevel,int *nplayer,Mix_Chunk *effect,int *player,int *time)
+void update (int key,int *done,int *menu,int *selection,int level,int *multij,int *game,int *nbg,int *nbut,int *nset,int *nlevel,int *nplayer,int *nCsm,Mix_Chunk *effect,int *player,int *Csm,int *time)
 {
 	int now=0;	
 	
 	switch (key)
 	{
 	case 1 : //escape
+		if ((*menu)==5) //player selection
+		{
+			(*menu)=4; 
+			if ((*nset)==0 || (*nset)==1)
+				Mix_PlayChannel(-1,effect,0);
+		}		
+
 		if ((*menu)==4) //player selection
 		{
 			(*menu)=3; 
@@ -305,6 +325,14 @@ void update (int key,int *done,int *menu,int *selection,int level,int *multij,in
 			if ((*nset)==0 || (*nset)==1)						
 					Mix_PlayChannel(-1,effect,0);
 		}
+
+		if ((*menu)==5)
+		{
+			(*nCsm)++;
+			if ((*nCsm)==4) (*nCsm)=1;
+			if ((*nset)==0 || (*nset)==1)						
+					Mix_PlayChannel(-1,effect,0);
+		}
 	break;
 	case 5 : //left
 		if ((*menu)==3)
@@ -338,6 +366,14 @@ void update (int key,int *done,int *menu,int *selection,int level,int *multij,in
 		{
 			(*nplayer)--;
 			if ((*nplayer)<=0) (*nplayer)=2;
+			if ((*nset)==0 || (*nset)==1)						
+					Mix_PlayChannel(-1,effect,0);
+		}
+	
+		if (*menu==5)
+		{
+			(*nCsm)--;
+			if ((*nCsm)<=0) (*nCsm)=3;
 			if ((*nset)==0 || (*nset)==1)						
 					Mix_PlayChannel(-1,effect,0);
 		}
@@ -386,7 +422,20 @@ void update (int key,int *done,int *menu,int *selection,int level,int *multij,in
 				(*player)=1; //delta
 				
 			if ((*nplayer)==2)
-				(*player)=2; //delta
+				(*player)=2; //alpha
+			
+			(*menu)=5;
+			break;
+
+		case 5 :
+			if ((*nCsm)==1)
+				(*Csm)=1; //clavier
+				
+			if ((*nCsm)==2)
+				(*Csm)=2; //souris
+
+			if ((*nCsm)==3)
+				(*Csm)=3; //manette
 			
 			(*game)=1; //le jeu commence
 			break;
@@ -441,4 +490,248 @@ void update (int key,int *done,int *menu,int *selection,int level,int *multij,in
 		(*time)=SDL_GetTicks();
 	}
     	if((*nbg) >= 12) (*nbg) = 0;
+}
+
+void updateSouris(SDL_Event event,int *done,int *menu,int *selection,int level,int *multij,int *game,int *nbg,int *nbut,int *nset,int *nlevel,int *nplayer,int *nCsm,Mix_Chunk *effect,int *player,int *Csm,int *time,SDL_Surface *screen,SDL_Surface *buttons[],SDL_Surface *settings[],SDL_Surface *levels[],SDL_Surface *players[],SDL_Surface *csm[])
+{
+	switch(*menu)
+	{
+		case 1: //main
+			if (event.type == SDL_MOUSEMOTION)
+			{
+				if( ( event.motion.x > ((screen->w/2)-(buttons[0]->w/2)) ) && (event.motion.x < ((screen->w/2)-(buttons[0]->w/2)+(buttons[0]->w) ) ) && (event.motion.y>273) && (event.motion.y<273+62) )
+				{
+					*nbut=1;
+					
+				}
+			}
+			if (event.type == SDL_MOUSEBUTTONDOWN)
+			{
+				if( ( event.motion.x > ((screen->w/2)-(buttons[0]->w/2)) ) && (event.motion.x < ((screen->w/2)-(buttons[0]->w/2)+(buttons[0]->w) ) ) && (event.motion.y>273) && (event.motion.y<273+62) )
+				{
+					*menu=3;
+				}
+			}
+			///////////////////////////
+
+			if (event.type == SDL_MOUSEMOTION)
+			{
+				if(event.motion.x>(screen->w/2)-(buttons[0]->w/2) && (event.motion.x< ((screen->w/2)-(buttons[0]->w/2)+(buttons[0]->w) ) ) && (event.motion.y>273+62+30) && (event.motion.y<273+62+30+62))
+				{
+					*nbut=2;
+					
+				}
+			}
+			if (event.type == SDL_MOUSEBUTTONDOWN)
+			{
+				if(event.motion.x>(screen->w/2)-(buttons[0]->w/2) && (event.motion.x< ((screen->w/2)-(buttons[0]->w/2)+(buttons[0]->w) ) ) && (event.motion.y>273+62+30) && (event.motion.y<273+62+30+62))
+				{
+					*menu=2;
+				}
+			}
+			////////////////////////////
+			
+			if (event.type == SDL_MOUSEMOTION)
+			{
+				if(event.motion.x>(screen->w/2)-(buttons[0]->w/2) && (event.motion.x< ((screen->w/2)-(buttons[0]->w/2)+(buttons[0]->w) ) ) && (event.motion.y>273+62*2+30*2) && (event.motion.y<273+3*62+2*30))
+				{
+					*nbut=3;
+					
+				}
+			}
+			if (event.type == SDL_MOUSEBUTTONDOWN)
+			{
+				if(event.motion.x>(screen->w/2)-(buttons[0]->w/2) && (event.motion.x< ((screen->w/2)-(buttons[0]->w/2)+(buttons[0]->w) ) ) && (event.motion.y>273+62*2+30*2) && (event.motion.y<273+3*62+2*30))
+				{
+					*done=0;
+				}
+			}
+		break;
+
+		case 2: //settings
+
+			if (event.type == SDL_MOUSEBUTTONDOWN)
+			{
+				if( ( event.motion.x > ( (screen->w/2)-(settings[0]->w/2)+250 ) ) && (event.motion.x < ( (screen->w/2)-(settings[0]->w/2)+345 ) ) && (event.motion.y>(screen->h/2)-(settings[0]->h/2)+170) && (event.motion.y<(screen->h/2)-(settings[0]->h/2)+205) )
+				{
+					if(*nset==0)
+						*nset=2;
+					else if(*nset==2)
+						*nset=0;
+					else if(*nset==1)
+						*nset=3;
+					else if(*nset==3)
+						*nset=1;
+				}
+			
+				if( ( event.motion.x > ( (screen->w/2)-(settings[0]->w/2)+250 ) ) && (event.motion.x < ( (screen->w/2)-(settings[0]->w/2)+345 ) ) && (event.motion.y>(screen->h/2)-(settings[0]->h/2)+240) && (event.motion.y<(screen->h/2)-(settings[0]->h/2)+275) )
+				{
+					if(*nset==0)
+						*nset=1;
+					else if(*nset==1)
+						*nset=0;
+					else if(*nset==2)
+						*nset=3;
+					else if(*nset==3)
+						*nset=2;
+				}
+				
+				if( ( event.motion.x > ( (screen->w/2)-(settings[0]->w/2)+190 ) ) && (event.motion.x < ( (screen->w/2)-(settings[0]->w/2)+260 ) ) && (event.motion.y>(screen->h/2)-(settings[0]->h/2)+400) && (event.motion.y<(screen->h/2)-(settings[0]->h/2)+455) )
+				{
+					*menu=1;
+				}
+			}
+		break;
+
+		case 3: //level
+
+			if (event.type == SDL_MOUSEMOTION)
+			{
+				if( ( event.motion.x > ((screen->w/2)-(levels[0]->w/2)+85) ) && (event.motion.x < ((screen->w/2)-(levels[0]->w/2)+(levels[0]->w)+175) ) && (event.motion.y>((screen->h/2)-(levels[0]->h/2)+185)) && (event.motion.y<((screen->h/2)-(levels[0]->h/2)+235) ) )
+				{
+					*nlevel=1;
+					
+				}
+			}
+			if (event.type == SDL_MOUSEBUTTONDOWN)
+			{
+				if( ( event.motion.x > ((screen->w/2)-(levels[0]->w/2)+85) ) && (event.motion.x < ((screen->w/2)-(levels[0]->w/2)+(levels[0]->w)+175) ) && (event.motion.y>((screen->h/2)-(levels[0]->h/2)+185)) && (event.motion.y<((screen->h/2)-(levels[0]->h/2)+235)) )
+				{
+					*menu=4;
+				}
+			}
+			///////////////////////////
+
+			if (event.type == SDL_MOUSEMOTION)
+			{
+				if( ( event.motion.x > ((screen->w/2)-(levels[0]->w/2)+200) ) && (event.motion.x < ((screen->w/2)-(levels[0]->w/2)+(levels[0]->w)+290) ) && (event.motion.y>((screen->h/2)-(levels[0]->h/2)+185)) && (event.motion.y<((screen->h/2)-(levels[0]->h/2)+235)) )
+				{
+					*nlevel=2;
+					
+				}
+			}
+			if (event.type == SDL_MOUSEBUTTONDOWN)
+			{
+				if( ( event.motion.x > ((screen->w/2)-(levels[0]->w/2)+200) ) && (event.motion.x < ((screen->w/2)-(levels[0]->w/2)+(levels[0]->w)+290) ) && (event.motion.y>((screen->h/2)-(levels[0]->h/2)+185)) && (event.motion.y<((screen->h/2)-(levels[0]->h/2)+235)) )
+				{
+					*game=1;
+				}
+			}
+			////////////////////////////
+			
+			if(level==2)
+			{
+				if (event.type == SDL_MOUSEMOTION)
+				{
+					if( ( event.motion.x > ((screen->w/2)-(levels[0]->w/2)+440) ) && (event.motion.x < ((screen->w/2)-(levels[0]->w/2)+(levels[0]->w)+530) ) && (event.motion.y>((screen->h/2)-(levels[0]->h/2)+185)) && (event.motion.y<((screen->h/2)-(levels[0]->h/2)+235)) )
+					{
+						*nlevel=3;
+					
+					}
+				}
+				if (event.type == SDL_MOUSEBUTTONDOWN)
+				{
+					if( ( event.motion.x > ((screen->w/2)-(levels[0]->w/2)+440) ) && (event.motion.x < ((screen->w/2)-(levels[0]->w/2)+(levels[0]->w)+530) ) && (event.motion.y>((screen->h/2)-(levels[0]->h/2)+185)) && (event.motion.y<((screen->h/2)-(levels[0]->h/2)+235)) )
+					{
+						*menu=4;
+					}
+				}
+				///////////////////////////
+
+				if (event.type == SDL_MOUSEMOTION)
+				{
+					if( ( event.motion.x > ((screen->w/2)-(levels[0]->w/2)+555) ) && (event.motion.x < ((screen->w/2)-(levels[0]->w/2)+(levels[0]->w)+645) ) && (event.motion.y>((screen->h/2)-(levels[0]->h/2)+185)) && (event.motion.y<((screen->h/2)-(levels[0]->h/2)+235)) )
+					{
+						*nlevel=4;
+					
+					}
+				}
+				if (event.type == SDL_MOUSEBUTTONDOWN)
+				{
+					if( ( event.motion.x > ((screen->w/2)-(levels[0]->w/2)+555) ) && (event.motion.x < ((screen->w/2)-(levels[0]->w/2)+(levels[0]->w)+645) ) && (event.motion.y>((screen->h/2)-(levels[0]->h/2)+185)) && (event.motion.y<((screen->h/2)-(levels[0]->h/2)+235)) )
+					{
+						*game=1;
+					}
+				}
+			}
+
+			if(level==3)
+			{
+				if (event.type == SDL_MOUSEMOTION)
+				{
+					if( ( event.motion.x > ((screen->w/2)-(levels[0]->w/2)+790) ) && (event.motion.x < ((screen->w/2)-(levels[0]->w/2)+(levels[0]->w)+885) ) && (event.motion.y>((screen->h/2)-(levels[0]->h/2)+185)) && (event.motion.y<((screen->h/2)-(levels[0]->h/2)+235)) )
+					{
+						*nlevel=5;
+					
+					}
+				}
+				if (event.type == SDL_MOUSEBUTTONDOWN)
+				{
+					if( ( event.motion.x > ((screen->w/2)-(levels[0]->w/2)+790) ) && (event.motion.x < ((screen->w/2)-(levels[0]->w/2)+(levels[0]->w)+885) ) && (event.motion.y>((screen->h/2)-(levels[0]->h/2)+185)) && (event.motion.y<((screen->h/2)-(levels[0]->h/2)+235)) )
+					{
+						*menu=4;
+					}
+				}
+				///////////////////////////
+
+				if (event.type == SDL_MOUSEMOTION)
+				{
+					if( ( event.motion.x > ((screen->w/2)-(levels[0]->w/2)+905) ) && (event.motion.x < ((screen->w/2)-(levels[0]->w/2)+(levels[0]->w)+995) ) && (event.motion.y>((screen->h/2)-(levels[0]->h/2)+185)) && (event.motion.y<((screen->h/2)-(levels[0]->h/2)+235)) )
+					{
+						*nlevel=6;
+					
+					}
+				}
+				if (event.type == SDL_MOUSEBUTTONDOWN)
+				{
+					if( ( event.motion.x > ((screen->w/2)-(levels[0]->w/2)+905) ) && (event.motion.x < ((screen->w/2)-(levels[0]->w/2)+(levels[0]->w)+995) ) && (event.motion.y>((screen->h/2)-(levels[0]->h/2)+185)) && (event.motion.y<((screen->h/2)-(levels[0]->h/2)+235)) )
+					{
+						*game=1;
+					}
+				}
+			}
+			
+		break;
+
+		case 4: //players
+
+			if (event.type == SDL_MOUSEMOTION)
+			{
+				if( ( event.motion.x > ((screen->w/2)-(players[0]->w/2)+10) ) && (event.motion.x < ((screen->w/2)-(players[0]->w/2)+(players[0]->w)+300) ) && (event.motion.y>((screen->h/2)-(players[0]->h/2))) && (event.motion.y<((screen->h/2)+(players[0]->h/2)) ) )
+				{
+					*nplayer=1;
+					
+				}
+			}
+			if (event.type == SDL_MOUSEBUTTONDOWN)
+			{
+				if( ( event.motion.x > ((screen->w/2)-(players[0]->w/2)+10) ) && (event.motion.x < ((screen->w/2)-(players[0]->w/2)+(players[0]->w)+300) ) && (event.motion.y>((screen->h/2)-(players[0]->h/2))) && (event.motion.y<((screen->h/2)+(players[0]->h/2)) ) )
+				{
+					*player=1; //delta					
+					*menu=5;
+				}
+			}
+			//////////////////////////
+
+			if (event.type == SDL_MOUSEMOTION)
+			{
+				if( ( event.motion.x > ((screen->w/2)-(players[0]->w/2)+370) ) && (event.motion.x < ((screen->w/2)+(players[0]->w/2)) ) && (event.motion.y>((screen->h/2)-(players[0]->h/2))) && (event.motion.y<((screen->h/2)+(players[0]->h/2)) ) )
+				{
+					*nplayer=2;
+					
+				}
+			}
+			if (event.type == SDL_MOUSEBUTTONDOWN)
+			{
+				if( ( event.motion.x > ((screen->w/2)-(players[0]->w/2)+370) ) && (event.motion.x < ((screen->w/2)+(players[0]->w/2)) ) && (event.motion.y>((screen->h/2)-(players[0]->h/2))) && (event.motion.y<((screen->h/2)+(players[0]->h/2)) ) )
+				{
+					*player=2; //alpha					
+					*menu=5;
+				}
+			}
+		break;
+
+		case 5:
+		break;
+	}	
 }

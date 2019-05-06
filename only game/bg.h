@@ -15,6 +15,8 @@
 typedef struct {
 	SDL_Surface *fixe[3];
 	SDL_Surface *scroll[3];
+	SDL_Surface *mask;
+	int scrollmask;
 	SDL_Rect camera;
 	Mix_Music *music;
 	int scrolling;

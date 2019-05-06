@@ -3,8 +3,6 @@
 #include <SDL/SDL.h>
 #include <SDL/SDL_image.h>
 #include "ennemi.h"
- 
-
 
 
 void initialiser_ennemi ( Ennemi *e)
@@ -53,62 +51,90 @@ void afficher_ennemi(Ennemi e,SDL_Surface *screen)
 }
 
 
-void deplacement_alea_ennemi(Ennemi *e, SDL_Surface *screen)
+void deplacement_alea_ennemi(Ennemi *e, SDL_Surface *screen,perso *p)
 {
 
-	for(int i=0;i<e->nbrEnnemis;i++)
+	if(p->attack!=1)
 	{
-		if(e->mvt[i].Xdest < e->mvt[i].pos.x)
+		for(int i=0;i<e->nbrEnnemis;i++)
 		{
-			e->mvt[i].pos.x-=1;
-			e->mvt[i].direction=1; //gauche
+			if(e->mvt[i].Xdest < e->mvt[i].pos.x)
+			{
+				e->mvt[i].pos.x-=1;
+				e->mvt[i].direction=1; //gauche
+			}
+			else if(e->mvt[i].Xdest > e->mvt[i].pos.x)
+			{
+				e->mvt[i].pos.x+=1;
+				e->mvt[i].direction=2; //droite
+			}
+			else if(e->mvt[i].Xdest == e->mvt[i].pos.x)
+			{
+				do
+				{			
+					e->mvt[i].Xdest = rand()% (e->mvt[i].Xmax - e->mvt[i].Xmin) + e->mvt[i].Xmin;
+				}while (abs(e->mvt[i].Xdest - e->mvt[i].pos.x) < 20);
+				e->mvt[i].direction=0; //repos
+				e->frame[i].x=0;
+			}
 		}
-		else if(e->mvt[i].Xdest > e->mvt[i].pos.x)
-		{
-			e->mvt[i].pos.x+=1;
-			e->mvt[i].direction=2; //droite
-		}
-		else if(e->mvt[i].Xdest == e->mvt[i].pos.x)
-		{
-			do
-			{			
-				e->mvt[i].Xdest = rand()% (e->mvt[i].Xmax - e->mvt[i].Xmin) + e->mvt[i].Xmin;
-			}while (abs(e->mvt[i].Xdest - e->mvt[i].pos.x) < 20);
-			e->mvt[i].direction=0; //repos
-			e->frame[i].x=0;
-		}
-	}
+	}	
+	
 }
 
-void animEnnemi(Ennemi *e)
+void animEnnemi(Ennemi *e, perso *p)
 {
-	if(SDL_GetTicks() - e->lastAnimated>=100)	
-	{	
-		for(int i=0;i<e->nbrEnnemis; i++)
-		{	
-			switch (e->mvt[i].direction)
-			{		
-				case 0: //repos
-					e->frame[i].x = e->image->w / 3 * 2 ;
-				break;
 	
-				case 1: //gauche
-						e->frame[i].y=0;
-						e->frame[i].x += e->image->w / 3 ;
-						if (e->frame[i].x >= e->image->w )
-							e->frame[i].x = 0;
-				break;
 
-				case 2: //droite
-						e->frame[i].y= e->image->h / 2 ;
-						e->frame[i].x += e->image->w / 3 ;
-						if (e->frame[i].x >= e->image->w )
-							e->frame[i].x = 0;
-				break;
-			}	
-			e->lastAnimated = SDL_GetTicks();
+	if(SDL_GetTicks() - e->lastAnimated>=2000)	
+
+	{	
+		if(p->attack==1)
+		{
+			for(int i=0;i<e->nbrEnnemis; i++)
+				{	
+					e->frame[i].y= e->image->h*2 / 3 ;
+					e->frame[i].x += e->image->w / 3 ;
+					if (e->frame[i].x >= e->image->w )
+					e->frame[i].x = 0;	
+					e->lastAnimated = SDL_GetTicks();
+				}
 		}
 	}
+
+		/*else if (e->mvt[i].pos.x>=40+p->pos.x && e->mvt[i].pos.x<=40+p->pos.x)
+		{*/
+		
+		if(SDL_GetTicks() - e->lastAnimated>=100)
+		{
+			for(int i=0;i<e->nbrEnnemis; i++)
+			{	
+				switch (e->mvt[i].direction)
+				{		
+					case 0: //repos
+						e->frame[i].x = e->image->w / 3 * 2 ;
+					break;
+	
+					case 1: //gauche
+							e->frame[i].y=0;
+							e->frame[i].x += e->image->w / 3 ;
+							if (e->frame[i].x >= e->image->w )
+								e->frame[i].x = 0;
+					break;
+
+					case 2: //droite
+							e->frame[i].y= e->image->h / 3 ;
+							e->frame[i].x += e->image->w / 3 ;
+							if (e->frame[i].x >= e->image->w )
+								e->frame[i].x = 0;
+					break;
+				}	
+				e->lastAnimated = SDL_GetTicks();
+			}
+		}
+	
+
+
 }
 
 

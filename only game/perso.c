@@ -6,7 +6,7 @@ void initialiserPerso(perso *p,int player)
 	p->image[1]=IMG_Load("./resources/alpha.png");
 	
 	p->pos.x=120;
-	p->pos.y=372;  //372
+	p->pos.y=368;  //372
 	p->pos.w=80;
 	p->pos.h=128;
 	p->numPerso=player-1;
@@ -18,6 +18,10 @@ void initialiserPerso(perso *p,int player)
 	p->lastAnimated = 0;
 	p->mvt=0;
 	p->previousmvt=0;
+	p->acc=0;
+	p->attack=0;
+	p->vitesse=0;
+	p->velocity=0;
 }
 
 void afficherPerso (perso p,SDL_Surface *screen)
@@ -79,9 +83,10 @@ void animPerso(perso *p)
 }	
 
 
-void deplacementPerso(SDL_Event event,perso *p)
+void deplacementPerso(SDL_Event event,perso *p,SDL_Surface *mask,int scrollmask)
 {
 	int x,y;	
+	float acceleration=0.5;
 	
 	if(p->mvt != p->previousmvt)
 	{
@@ -97,21 +102,30 @@ void deplacementPerso(SDL_Event event,perso *p)
 			case SDLK_RIGHT:
 				p->mvt=1; //marcher
 				if (p->collision==0)
-					p->pos.x+=3;
+					//p->pos.x+=3;
+					p->vitesse+=acceleration;
+					
 			break;
 
 			case SDLK_UP:
 				p->mvt=3; //sauter
+				if(p->pos.y==368)				
+					p->velocity =-70;
 			break;
 
+			case SDLK_LEFT:
+				if(p->vitesse>=2*acceleration)
+				p->vitesse-=2*acceleration;
+				else 
+				p->vitesse=0;
+			break;
+	
 			case SDLK_DOWN:
-				p->mvt=0; //stop
+				p->vitesse=0;
 			break;
 		
 			case SDLK_SPACE:
-				p->mvt=2; //courir
-				if (p->collision==0)
-					p->pos.x+=6;
+				p->attack=1;
 			break;
 			}
 		break;
@@ -125,60 +139,50 @@ void deplacementPerso(SDL_Event event,perso *p)
 			}
 			if(event.button.button == SDL_BUTTON_RIGHT)
 		    	{
-				p->mvt=3;
+				p->mvt=3; //sauter
+				if(p->pos.y==368)				
+					p->velocity =-70;
 			}
 	  	break;
-	
-		case SDL_MOUSEBUTTONUP:
-			if (p->pos.y<372)
-			{		
-				p->pos.x+=4;			
-				p->pos.y+=15;
-			}
-			else 
-			{					
-				p->pos.y=372;
-				p->mvt=0;
-			}	
-			
-	  	break;
+	/*
+		case SDL_MOUSEBUTTONUP:			
+			p->mvt=0;
+	  	break;*/
 
 		case SDL_MOUSEMOTION:
 			if(event.motion.x > p->pos.x + 40)
 			{
-				if (p->pos.y<372)
-				{		
-					p->pos.x+=4;			
-					p->pos.y+=15;
-				}
-				else 
-				{					
-					p->pos.y=372;
-					p->mvt=1;
-					p->pos.x+=3;	
-				}
+				p->mvt=1;
+				if(p->collision==0)				
+					p->pos.x+=4;
 			}
 			else p->mvt=0;
 	   	break;
 		
+	/*	
 		case SDL_KEYUP:				
-			if (p->pos.y<372)
-			{		
-				p->pos.x+=2;			
-				p->pos.y+=10;
-			}
-			else 
-			{					
-				p->pos.y=372;
-				p->mvt=0;
-			}	
-					
-
+			p->mvt=0;
+		break;	*/				
 	}
-	if((p->mvt==3))
-	{
-		if (p->pos.y>230) //230
-			{p->pos.y-=20; p->pos.x+=5;}
-
+	//printf("%f  ",p->vitesse);
+	p->pos.x+=p->vitesse;
+	if(p->vitesse>5)
+		p->mvt=2; //courir
+	else if(p->vitesse>0)
+		p->mvt=1;
+	
+	if((p->velocity <0))
+	{			
+		p->velocity+=10;		
+		p->pos.y+=p->velocity; 
+		p->pos.x+=15;
 	}
+
+	if (collisionmap(p->pos,mask,scrollmask)==0 && (p->velocity >=0))
+		{                         
+			
+			p->velocity+=10; //gravité
+			p->pos.y+=p->velocity;
+			p->pos.x+=15;
+		}
 }

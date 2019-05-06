@@ -1,7 +1,7 @@
 prog: jeu.o bg.o etoile.o lampe.o perso.o collisions.o ennemi.o chrono.o vie.o score.o getpixel.o enigmes.o
-	gcc jeu.o etoile.o lampe.o bg.o perso.o collisions.o ennemi.o chrono.o vie.o score.o getpixel.o enigmes.o -o prog -g -lSDL -lSDL_image -lm -lSDL_ttf
+	gcc jeu.o etoile.o lampe.o bg.o perso.o collisions.o ennemi.o chrono.o vie.o score.o getpixel.o enigmes.o -o prog -g -lSDL -lSDL_image -lm -lSDL_ttf -lSDL_gfx
 jeu.o: jeu.c
-	gcc -c jeu.c -g -lSDL -lSDL_image
+	gcc -c jeu.c -g -lSDL -lSDL_image -lSDL_gfx
 etoile.o: etoile.c
 	gcc -c etoile.c -g -lSDL -lSDL_image
 lampe.o: lampe.c

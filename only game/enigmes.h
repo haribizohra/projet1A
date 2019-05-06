@@ -9,9 +9,6 @@
 
 typedef struct {
 	SDL_Surface *texteQ, *texteR;
-	SDL_Surface *fond;
-	char question[20];
-	char reponses[20];
 	int solution;
 }question;
 

@@ -1,4 +1,4 @@
-
+#include "perso.h"
 #ifndef ENNEMI_H_INCLUDED
 #define ENNEMI_H_INCLUDED
 
@@ -18,8 +18,8 @@ typedef struct
 
 void initialiser_ennemi ( Ennemi *e);
 void afficher_ennemi(Ennemi e,SDL_Surface *screen);
-void deplacement_alea_ennemi(Ennemi *e, SDL_Surface *screen);
-void animEnnemi(Ennemi *e);
+void deplacement_alea_ennemi(Ennemi *e, SDL_Surface *screen,perso *p);
+void animEnnemi(Ennemi *e,perso *p);
 #endif
 
 

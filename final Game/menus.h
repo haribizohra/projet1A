@@ -24,7 +24,7 @@ typedef struct {
 
 SDL_Surface *loadimage(char name[]);
 
-void initialiserMenu(SDL_Surface** screen,surface *bg,surface *buttons,surface *settings,surface *levels,surface *players,surface *logo,surface *Breturn,surface *black1,surface *black2,MenuSet *menuSet);
+void initialiserMenu(SDL_Surface** screen,surface *bg,surface *buttons,surface *settings,surface *levels,surface *players,surface *input,surface *logo,surface *Breturn,surface *black1,surface *black2,MenuSet *menuSet)
 
 void afficherMenu(SDL_Surface *screen,surface bg,surface buttons,surface settings,surface levels,surface players,surface logo,surface Breturn,surface black1,surface black2,MenuSet menuSet);
 

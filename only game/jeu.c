@@ -26,8 +26,8 @@ int main(int argc, char *argv[])
 
 	screen = SDL_SetVideoMode(1080,720,32,SDL_HWSURFACE|SDL_DOUBLEBUF);
 
-	TTF_Init();
 	
+	TTF_Init();
 	init_bg(&bg);
 	initialiserEtoile(&etoile);
 	initialiserLampe(&lampe);
@@ -53,18 +53,38 @@ int main(int argc, char *argv[])
 	posScore.y=350;
 
 	//srand(time(NULL));
+	SDL_EnableKeyRepeat(SDL_DEFAULT_REPEAT_DELAY,SDL_DEFAULT_REPEAT_INTERVAL);
 
+	SDL_Surface *rotation;
+	double angle = 200;
+    	double zoom = 0;
 
+	while(zoom<1 || angle >0)
+	{
+		angle-=4;
+		zoom+=0.02;
+		rotation = rotozoomSurface(bg.fixe[0], angle, zoom, 0);
+		SDL_FillRect(screen, NULL, SDL_MapRGB(screen->format, 0, 0, 0));
+		SDL_BlitSurface(rotation,NULL,screen,NULL);
+		SDL_FreeSurface(rotation);
+		SDL_Delay(50);
+		SDL_Flip(screen);
+	}
+	
 	while(done==1)
 	{
-
+	
 			if(SDL_PollEvent(&event)) 
 			{
 				switch (event.type) 
 				{
 				    case SDL_QUIT: 
 						done=0;
-						break;
+					break;
+				    case SDL_KEYDOWN:
+					if(event.key.keysym.sym==SDLK_ESCAPE)
+						done=0;
+					break;
 				}
 			}
 		
@@ -106,6 +126,7 @@ int main(int argc, char *argv[])
 			scrolling(&bg,&lampe,&etoile,&ennemi,&pers,level);
 	
 		afficher_bg(bg,level,screen);
+		//SDL_BlitSurface(bg.mask,NULL,screen,NULL);
 
 		animLampe(&lampe);
 		afficherLampe(screen,lampe);
@@ -113,21 +134,24 @@ int main(int argc, char *argv[])
 		animEtoile(&etoile);
 		afficherEtoile(screen,etoile);
 	
-		deplacement_alea_ennemi(&ennemi,screen);
-		animEnnemi(&ennemi);
+		deplacement_alea_ennemi(&ennemi,screen,&pers);
+		animEnnemi(&ennemi,&pers);
 		afficher_ennemi(ennemi,screen);
 
-		if(   (bg.camera.x<8560)  ||  ( (bg.camera.x>=8560)&&(pers.pos.x<450) )   )		
-			deplacementPerso(event,&pers);
+		if((   (bg.camera.x<8560)  ||  ( (bg.camera.x>=8560)&&(pers.pos.x<450) )   )&& gameover==0	)	
+			deplacementPerso(event,&pers,bg.mask,bg.scrollmask);
 		animPerso(&pers);
 		afficherPerso (pers,screen);
-	
-		timer(&chrono,screen);
 		
-		nbVie(ennemi.nbrCollisions,&gameover,&vie,screen);
-		afficherScore(screen,&score,bg,etoile.nbrCollisions);
+		if(gameover==0)
+		{
+			timer(&chrono,screen);
+		
+			nbVie(ennemi.nbrCollisions,&gameover,&vie,screen);
 
-		if( (bg.camera.x>=8560)&&(pers.pos.x>=450) ) 
+			afficherScore(screen,&score,bg,etoile.nbrCollisions);
+		}
+		if( (bg.camera.x>=8560)&&(pers.pos.x>=450) ) //8560 450
 		{
 			if(enig.num==-1)
 				generationAleatoire(&enig);
@@ -145,8 +169,9 @@ int main(int argc, char *argv[])
 			score.texteScore =TTF_RenderText_Blended(score.police,string, couleureNoire);
 			SDL_BlitSurface(score.texteScore, NULL, screen, &posScore);
 		}
-		if(enig.correcte==0 || vie.valVie==0 || SDL_GetTicks()>72000)
+		if(enig.correcte==0 || vie.valVie==0 || SDL_GetTicks()>72000 || pers.pos.y> 375)
 		{
+			gameover=1;			
 			SDL_BlitSurface(board,NULL,screen,&posBoard);
 			SDL_BlitSurface(lost,NULL,screen,&posWL);
 			sprintf(string, "score = %d ", score.scoreActuel);
@@ -154,6 +179,7 @@ int main(int argc, char *argv[])
 			score.texteScore =TTF_RenderText_Blended(score.police,string, couleureNoire);
 			SDL_BlitSurface(score.texteScore, NULL, screen, &posScore);
 		}
+		
 			
 	
 		SDL_Flip(screen);

@@ -1,4 +1,5 @@
 #include "collisions.h"
+#include "getpixel.h"
 
 int collisionBoundingBox(SDL_Rect first,SDL_Rect second)
 {
@@ -57,51 +58,19 @@ int collisionTrigo (SDL_Rect first,SDL_Rect second,int cercle)
 }
 
 
-bool collisionmap (int direction,SDL_Rect col,SDL_Surface *collisionMap,SDL_Surface *ecran)
+bool collisionmap (SDL_Rect entite,SDL_Surface *mask,int scrollmask)
 {
-/*
- if (collisionMap == NULL)
- collisionMap = SDL_LoadBMP("map.bmp");
-    SDL_Color couleur;
-    int i;
-    if (direction == 3)
-    {
- for(i=(col.y+80);i<(col.y + 117);i++)
-{
- couleur = GetPixel(collisionMap, col.x, i);
- if((couleur.r == 255 && couleur.g == 255 && couleur.b == 255) )
- break;
-}
-    }
-    else if (direction == 4)
-    {
- for(i=(col.y+80);i<(col.y + 117);i++)
-{
-       couleur = GetPixel(collisionMap, col.x + 65 + 10, i);
- if((couleur.r == 255  && couleur.g == 255 && couleur.b == 255) )
- break;
-}
-    }
-    else if (direction == 1)
-    {
-for(i=col.x + 10;i<(col.x + 25);i++)
-{
-        couleur = GetPixel(collisionMap, i, col.y);
- if((couleur.r == 255 && couleur.g == 255 && couleur.b == 255) )
- break;
-}
-    }
-    else if (direction == 2)
-    {
-for(i=col.x + 10;i<(col.x + 25);i++)
-{
-        couleur = GetPixel(collisionMap, i, col.y + 100 + 10);
- if((couleur.r == 255 && couleur.g == 255 && couleur.b == 255) )
- break;
-}
-    }
-   
- return ((couleur.r == 255 && couleur.g == 255 && couleur.b == 255) );
-*/
-}
+	SDL_Color couleur;
+	couleur.r=255;
+	couleur.g=255;
+	couleur.b=255;
+	int i;
 
+	for(i=entite.x+20 ;i<(entite.x + entite.w-20);i++)
+	{
+		couleur = GetPixel(mask, i+scrollmask, entite.y + entite.h);
+		if((couleur.r == 0 && couleur.g == 0 && couleur.b == 0) )
+			break;
+	}
+	return ((couleur.r == 0 && couleur.g == 0 && couleur.b == 0) );
+}
